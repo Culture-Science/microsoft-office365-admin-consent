@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe OmniAuth::Strategies::MicrosoftOffice365 do
+RSpec.describe OmniAuth::Strategies::MicrosoftOffice365AdminConsent do
   let(:request)      { double("Request", params: {}, cookies: {}, env: {}) }
   let(:access_token) { instance_double(OAuth2::AccessToken) }
   let(:options)      { { } }
@@ -12,7 +12,7 @@ RSpec.describe OmniAuth::Strategies::MicrosoftOffice365 do
   end
 
   let(:strategy) do
-    OmniAuth::Strategies::MicrosoftOffice365.new(app, "appid", "secret", options)
+    OmniAuth::Strategies::MicrosoftOffice365AdminConsent.new(app, "appid", "secret", options)
   end
 
   before do
@@ -26,8 +26,8 @@ RSpec.describe OmniAuth::Strategies::MicrosoftOffice365 do
   end
 
   describe "#name" do
-    it "returns :microsoft_office365" do
-      expect(strategy.name).to eq(:microsoft_office365)
+    it "returns :microsoft_office365_admin_consent" do
+      expect(strategy.name).to eq(:microsoft_office365_admin_consent)
     end
   end
 
