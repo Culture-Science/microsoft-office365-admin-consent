@@ -29,7 +29,7 @@ module OmniAuth
       end
 
       def get_access_token
-        tenant = request.params["tenant"]
+        tenant = options["tenant"] || request.params["tenant"]
         response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
         JSON.parse(response.body)
       end
