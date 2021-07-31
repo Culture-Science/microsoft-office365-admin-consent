@@ -3,19 +3,9 @@ require "omniauth/strategies/oauth2"
 module OmniAuth
   module Strategies
     class MicrosoftOffice365AdminConsent < OmniAuth::Strategies::OAuth2
-      option :name, :microsoft_office365_admin_consent
-
-      class AccessToken < ::OAuth2::AccessToken
-        # Refreshes the current Access Token
-        #
-        # @return [AccessToken] a new AccessToken
-        # @note options should be carried over to the new AccessToken
-        def refresh!(params = {}, access_token_opts = {}, access_token_class = self.class)
-          @client.strategy.get_access_token
-        end
-      end
-
       DEFAULT_SCOPE=".default"
+
+      option :name, :microsoft_office365_admin_consent
 
       option :client_options, {
         site:          "https://login.microsoftonline.com",
