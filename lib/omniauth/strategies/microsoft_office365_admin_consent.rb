@@ -10,8 +10,8 @@ module OmniAuth
         #
         # @return [AccessToken] a new AccessToken
         # @note options should be carried over to the new AccessToken
-        def refresh(params = {}, access_token_opts = {}, access_token_class = self.class)
-          @client.get_access_token
+        def refresh!(params = {}, access_token_opts = {}, access_token_class = self.class)
+          @client.strategy.get_access_token
         end
       end
 
