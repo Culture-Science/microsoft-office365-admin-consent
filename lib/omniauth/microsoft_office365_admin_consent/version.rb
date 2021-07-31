@@ -1,5 +1,5 @@
 module OmniAuth
   module MicrosoftOffice365AdminConsent
-    VERSION = "0.0.1"
+    VERSION = "0.0.2"
   end
 end

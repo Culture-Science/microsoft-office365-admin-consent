@@ -11,7 +11,7 @@ module OmniAuth
         # @return [AccessToken] a new AccessToken
         # @note options should be carried over to the new AccessToken
         def refresh(params = {}, access_token_opts = {}, access_token_class = self.class)
-          @client.get_token
+          @client.get_access_token
         end
       end
 
@@ -24,11 +24,11 @@ module OmniAuth
       }
 
       def build_access_token
-        token = get_token
+        token = get_access_token
         ::OAuth2::AccessToken.new(client, token["access_token"], expires_in: token["expires_in"])
       end
 
-      def get_token
+      def get_access_token
         tenant = request.params["tenant"]
         response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
         JSON.parse(response.body)
