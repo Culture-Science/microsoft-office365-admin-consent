@@ -20,7 +20,6 @@ module OmniAuth
 
       def get_access_token
         tenant = options["tenant"] || request.params["tenant"]
-        sleep 10 # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
         response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
         JSON.parse(response.body)
       end
@@ -43,6 +42,9 @@ module OmniAuth
       end
 
       def raw_info
+        # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
+        sleep 10 unless @raw_info
+
         @raw_info ||= access_token.get("https://graph.microsoft.com/v1.0/organization").parsed
       end
 
