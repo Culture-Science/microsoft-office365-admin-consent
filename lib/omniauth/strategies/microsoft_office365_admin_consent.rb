@@ -20,6 +20,14 @@ module OmniAuth
 
       def get_access_token
         tenant = options["tenant"] || request.params["tenant"]
+        STDERR.puts "Sleeping for fifteen seconds"
+        sleep(15)
+        response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
+        STDERR.puts "Got a response. Sleeping again."
+        sleep(5)
+        response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
+        STDERR.puts "Got a response. Sleeping again."
+        sleep(5)
         response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
         JSON.parse(response.body)
       end
@@ -46,8 +54,8 @@ module OmniAuth
         @raw_info ||= access_token.get("https://graph.microsoft.com/v1.0/organization").parsed
       rescue
         STDERR.puts "Microsoft's Graph API doesn't immediately recognize that the user gave consent :'( Retrying"
-        sleep(3)
-        retry
+        sleep(5)
+        @raw_info ||= access_token.get("https://graph.microsoft.com/v1.0/organization").parsed
       end
 
       def authorize_params
