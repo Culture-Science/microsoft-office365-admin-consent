@@ -15,19 +15,17 @@ module OmniAuth
 
       def build_access_token
         token = get_access_token
-        ::OAuth2::AccessToken.new(client, token["access_token"], expires_in: token["expires_in"])
+        ::OAuth2::AccessToken.new(client, token["access_token"], expires_in: token["expires_in"]).tap do |access_token|
+          access_token.get("https://graph.microsoft.com/v1.0/organization")
+        end
+      rescue
+        # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
+        sleep(3)
+        retry
       end
 
       def get_access_token
         tenant = options["tenant"] || request.params["tenant"]
-        STDERR.puts "Sleeping for fifteen seconds"
-        sleep(15)
-        response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
-        STDERR.puts "Got a response. Sleeping again."
-        sleep(5)
-        response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
-        STDERR.puts "Got a response. Sleeping again."
-        sleep(5)
         response = Faraday.post("https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/token", client_id: options[:client_id], client_secret: options[:client_secret], grant_type: "client_credentials", scope: ".default")
         JSON.parse(response.body)
       end
@@ -50,11 +48,6 @@ module OmniAuth
       end
 
       def raw_info
-        # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
-        @raw_info ||= access_token.get("https://graph.microsoft.com/v1.0/organization").parsed
-      rescue
-        STDERR.puts "Microsoft's Graph API doesn't immediately recognize that the user gave consent :'( Retrying"
-        sleep(5)
         @raw_info ||= access_token.get("https://graph.microsoft.com/v1.0/organization").parsed
       end
 
