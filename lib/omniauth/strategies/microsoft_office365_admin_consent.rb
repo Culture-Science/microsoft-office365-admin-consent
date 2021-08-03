@@ -43,9 +43,11 @@ module OmniAuth
 
       def raw_info
         # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
-        sleep 10 unless @raw_info
-
         @raw_info ||= access_token.get("https://graph.microsoft.com/v1.0/organization").parsed
+      rescue
+        STDERR.puts "Microsoft's Graph API doesn't immediately recognize that the user gave consent :'( Retrying"
+        sleep(3)
+        retry
       end
 
       def authorize_params
