@@ -21,6 +21,7 @@ module OmniAuth
       rescue
         # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
         sleep(3)
+        puts "SLEEPING"
         retry
       end
 
