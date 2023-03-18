@@ -18,10 +18,10 @@ module OmniAuth
         ::OAuth2::AccessToken.new(client, token["access_token"], expires_in: token["expires_in"]).tap do |access_token|
           access_token.get("https://graph.microsoft.com/v1.0/organization")
         end
-      rescue
+      rescue => e
         # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
         sleep(3)
-        puts "SLEEPING"
+        puts "SLEEPING: #{e}"
         retry
       end
 
