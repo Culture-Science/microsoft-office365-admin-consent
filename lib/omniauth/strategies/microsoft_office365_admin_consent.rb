@@ -15,16 +15,21 @@ module OmniAuth
 
       def build_access_token
         retry_count = 0
-        token = get_access_token
-        ::OAuth2::AccessToken.new(client, token["access_token"], expires_in: token["expires_in"]).tap do |access_token|
-          access_token.get("https://graph.microsoft.com/v1.0/organization")
+
+        binding.pry
+        
+        begin
+          token = get_access_token
+          ::OAuth2::AccessToken.new(client, token["access_token"], expires_in: token["expires_in"]).tap do |access_token|
+            access_token.get("https://graph.microsoft.com/v1.0/organization")
+          end
+        rescue => e
+          # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
+          sleep(3)
+          puts "SLEEPING: #{e}"
+          retry_count += 1
+          retry unless retry_count >= 5
         end
-      rescue => e
-        # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
-        sleep(3)
-        puts "SLEEPING: #{e}"
-        retry_count += 1
-        retry unless retry_count >= 5
       end
 
       def get_access_token
