@@ -14,9 +14,7 @@ module OmniAuth
       }
 
       def build_access_token
-        retry_count = 0
-
-        binding.pry
+        retry_count = 0     
         
         begin
           token = get_access_token
@@ -26,7 +24,7 @@ module OmniAuth
         rescue => e
           # Microsoft's Graph API doesn't immediately recognize that the user gave consent :'(
           sleep(3)
-          puts "SLEEPING: #{e}"
+          puts "SLEEPING: #{e}; #{token}"
           retry_count += 1
           retry unless retry_count >= 5
         end
